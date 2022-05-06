@@ -2,42 +2,44 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.mobicents.protocols.sctp</groupId>
+		<groupId>org.restcomm.protocols.sctp</groupId>
 		<artifactId>sctp-parent</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
+		<version>2.2.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>sctp-impl</artifactId>
-	<name>Restcomm :: SCTP :: Impl :: ${pom.artifactId}</name>
+	<name>Restcomm :: SCTP :: Impl :: ${project.artifactId}</name>
 
 
 	<dependencies>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
 		</dependency>
-		<!-- javolution -->
+			
 		<dependency>
-			<groupId>javolution</groupId>
-			<artifactId>javolution</artifactId>
-			<version>${javolution.version}</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
 		</dependency>
+			
 		<dependency>
-			<groupId>${pom.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>sctp-api</artifactId>
-			<version>${pom.version}</version>
+			<version>${project.version}</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<version>${testng.version}</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
@@ -49,16 +51,14 @@
 				<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.9</version>
+				<version>3.0.0-M6</version>				
 				<configuration>
-					<suiteXmlFiles>
-						<suiteXmlFile>testng-methods.xml</suiteXmlFile>
-						<suiteXmlFile>testng-classes.xml</suiteXmlFile>
-					</suiteXmlFiles>
+				    <skipTests>false</skipTests>					
 				</configuration>
 			</plugin>	
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.2.0</version>
 				<configuration>
 					<filesets>
 						<fileset>

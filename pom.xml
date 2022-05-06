@@ -2,27 +2,26 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.mobicents</groupId>
-		<artifactId>restcomm-parent</artifactId>
-		<version>2.27.32</version>
+		<groupId>com.mobius-software</groupId>
+		<artifactId>mobius-public-parent</artifactId>
+		<version>1.0.5</version>
 	</parent>
-
-	<groupId>org.mobicents.protocols.sctp</groupId>
+	
+	<groupId>org.restcomm.protocols.sctp</groupId>
 	<artifactId>sctp-parent</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
-	<name>Restcomm :: SCTP :: Parent :: ${pom.artifactId}</name>
+	<version>2.2.0-SNAPSHOT</version>
+	<name>Restcomm :: SCTP :: Parent :: ${project.artifactId}</name>
 	<packaging>pom</packaging>
 
 
 	<properties>
-		<log4j.version>1.2.8</log4j.version>
-		<javolution.version>5.5.1</javolution.version>
-		<commons.version>1.0.0.CR1</commons.version>
-		<testng.version>6.2</testng.version>
-		<netty.version>4.0.33.Final</netty.version>
-		<compiler.plugin.version>2.0.2</compiler.plugin.version>
-		<compile.source>1.7</compile.source>
-
+		<log4j2.version>2.17.2</log4j2.version>
+		<junit.version>4.11</junit.version>
+		<testng.version>7.5</testng.version>
+		<compiler.plugin.version>3.8.1</compiler.plugin.version>
+		<maven.plugin.version>8.0.0-5</maven.plugin.version>
+		<compile.source>1.8</compile.source>
+		<netty.version>4.1.53.Final</netty.version>	
 	</properties>
 	<modules>
 		<module>sctp-api</module>
@@ -31,15 +30,17 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.mobicents.commons</groupId>
-				<artifactId>commons</artifactId>
-				<version>${commons.version}</version>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-core</artifactId>
+				<version>${log4j2.version}</version>
 			</dependency>
+			
 			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>${log4j.version}</version>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-api</artifactId>
+				<version>${log4j2.version}</version>
 			</dependency>
+			
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -49,75 +50,6 @@
 		</dependencies>
 	</dependencyManagement>
 
-	<profiles>
-		<profile>
-			<id>maven-release</id>
-			<modules>
-				<module>docs</module>
-				<module>release</module>
-			</modules>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-release-plugin</artifactId>
-						<configuration>
-							<allowTimestampedSnapshots>true</allowTimestampedSnapshots>
-							<preparationGoals>clean install</preparationGoals>
-							<autoVersionSubmodules>true</autoVersionSubmodules>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>release</id>
-			<modules>
-				<module>docs</module>
-				<module>release</module>
-			</modules>
-		</profile>
-		<profile>
-			<id>release-sign-artifacts</id>
-			<activation>
-				<property>
-					<name>performRelease</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>install</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<version>2.1.2</version>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 	<developers>
 		<developer>
 			<id>serg.vetyutnev</id>
@@ -141,6 +73,17 @@
 			</roles>
 			<timezone>+5.5</timezone>
 		</developer>
+		<developer>
+			<id>yulian.oifa</id>
+			<name>Yulian Oifa</name>
+			<email>yulian.oifa@mobius-software.com</email>
+			<organization>Mobius Software</organization>
+			<organizationUrl>https://www.mobius-software.com/</organizationUrl>
+			<roles>
+				<role>Active Developer</role>
+			</roles>
+			<timezone>+3</timezone>
+		</developer>
 	</developers>
 	<licenses>
 		<license>
@@ -152,11 +95,9 @@
 	<build>
 		<plugins>
 			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<groupId>org.mobicents.tools</groupId>
-				<version>
-					${restcomm.tools.mavenplugin.eclipse.version}
-				</version>
+				<artifactId>eclipse-maven-plugin</artifactId>
+				<groupId>org.restcomm.tools</groupId>
+				<version>${maven.plugin.version}</version>
 				<inherited>false</inherited>
 				<executions />
 				<configuration>
@@ -183,96 +124,101 @@
 					<debug>${compile.debug}</debug>
 				</configuration>
 			</plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>src</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.1.2</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>docs</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>no-gpg</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.1.2</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>none</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	
 	<scm>
-		<connection>scm:git:https://github.com/RestComm/sctp.git</connection>
-		<developerConnection>scm:git:git@github.com:RestComm/sctp.git</developerConnection>
-		<url>https://github.com/RestComm/sctp</url>
-	</scm>
-	<!-- repositories -->
-	<repositories>
-		<repository>
-			<id>restcomm-public-repository-group</id>
-			<name>Restcomm Public Maven Repository Group</name>
-			<url>https://oss.sonatype.org/content/groups/public/</url>
-			<layout>default</layout>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>jboss-public-repository-group</id>
-			<name>JBoss Public Maven Repository Group</name>
-			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
-			<layout>default</layout>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>jboss-3rd-party-repository-group</id>
-			<name>JBoss ThirdParty Releases Repository Group</name>
-			<url>http://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-			<layout>default</layout>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>jboss-3rd-party-upload-repository-group</id>
-			<name>JBoss ThirdParty Upload Repository Group</name>
-			<url>http://repository.jboss.org/nexus/content/repositories/thirdparty-upload</url>
-			<layout>default</layout>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>java.net-Public</id>
-			<name>Maven Java Net Snapshots and Releases</name>
-			<url>http://download.java.net/maven/2/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>backup.repository.jboss.org</id>
-			<name>JBoss Repository Backup</name>
-			<url>http://anonsvn.jboss.org/repos/repository.jboss.org/maven2/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
+		<connection>scm:git:https://github.com/mobius-software-ltd/sctp.git</connection>
+		<developerConnection>scm:git:git@github.com:mobius-software-ltd/sctp.git</developerConnection>
+		<url>https://github.com/mobius-software-ltd/sctp</url>
+	</scm>	
 </project>
