@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.mobius-software</groupId>
 		<artifactId>mobius-public-parent</artifactId>
-		<version>1.0.8</version>
+		<version>1.0.9</version>
 	</parent>
 	
 	<groupId>com.mobius-software.protocols.sctp</groupId>
@@ -234,5 +234,5 @@
 		<developerConnection>scm:git:git@github.com:mobius-software-ltd/sctp.git</developerConnection>
 		<url>https://github.com/mobius-software-ltd/sctp</url>
 	  <tag>HEAD</tag>
-  </scm>	
+    </scm>	
 </project>
