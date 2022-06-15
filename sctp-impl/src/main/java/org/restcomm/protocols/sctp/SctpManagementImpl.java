@@ -584,7 +584,7 @@ public class SctpManagementImpl implements Management {
         while(iterator.hasNext()) {
             Association associationTemp = iterator.next();
             
-            if (associationTemp.getServerName().equals(server.getName()) && peerAddress.equals(associationTemp.getPeerAddress()) && associationTemp.getPeerPort() == peerPort) {
+            if (associationTemp.getServerName()!=null && associationTemp.getServerName().equals(server.getName()) && peerAddress.equals(associationTemp.getPeerAddress()) && associationTemp.getPeerPort() == peerPort) {
                 throw new Exception(String.format("Already has association=%s with same peer address=%s and port=%d",
                         associationTemp.getName(), peerAddress, peerPort));
             }
@@ -670,13 +670,13 @@ public class SctpManagementImpl implements Management {
         Iterator<Association> iterator=this.associations.values().iterator();
         while(iterator.hasNext()) {
             Association associationTemp = iterator.next();
-
-            if (peerAddress.equals(associationTemp.getPeerAddress()) && associationTemp.getPeerPort() == peerPort) {
+            
+            if (peerAddress.equals(associationTemp.getPeerAddress()) && associationTemp.getPeerPort() == peerPort && associationTemp.getIpChannelType().equals(ipChannelType)) {
                 throw new Exception(String.format("Already has association=%s with same peer address=%s and port=%d",
                         associationTemp.getName(), peerAddress, peerPort));
             }
 
-            if (hostAddress.equals(associationTemp.getHostAddress()) && associationTemp.getHostPort() == hostPort) {
+            if (hostAddress.equals(associationTemp.getHostAddress()) && associationTemp.getHostPort() == hostPort && associationTemp.getIpChannelType().equals(ipChannelType)) {
                 throw new Exception(String.format("Already has association=%s with same host address=%s and port=%d",
                         associationTemp.getName(), hostAddress, hostPort));
             }
