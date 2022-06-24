@@ -26,6 +26,8 @@ import java.net.InetSocketAddress;
 import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -84,6 +86,15 @@ public class AssociationImpl implements Association {
     private NettySctpChannelInboundHandlerAdapter channelHandler;
     protected int congLevel;
 
+    private AtomicInteger communicationsUp=new AtomicInteger(0);
+    private AtomicInteger communicationsDown=new AtomicInteger(0);
+    private AtomicInteger communicationsLost=new AtomicInteger(0);
+    private AtomicInteger communicationsRestart=new AtomicInteger(0);
+    private AtomicLong packetsSent=new AtomicLong(0);
+    private AtomicLong packetsReceived=new AtomicLong(0);
+    private AtomicLong bytesSent=new AtomicLong(0);
+    private AtomicLong bytesReceived=new AtomicLong(0);
+    
     public AssociationImpl() {
         super();
     }
@@ -346,6 +357,10 @@ public class AssociationImpl implements Association {
 
         NettySctpChannelInboundHandlerAdapter handler = checkSocketIsOpen();
 
+        packetsSent.incrementAndGet();
+        if(payloadData.getByteBuf()!=null)
+        	bytesSent.addAndGet(payloadData.getByteBuf().readableBytes());
+        
         final ByteBuf byteBuf = payloadData.getByteBuf();
         if (this.ipChannelType == IpChannelType.SCTP) {
             SctpMessage sctpMessage = new SctpMessage(payloadData.getPayloadProtocolId(), payloadData.getStreamNumber(),
@@ -498,6 +513,10 @@ public class AssociationImpl implements Association {
 
     protected void read(PayloadData payload) {
         try {
+        	packetsReceived.incrementAndGet();
+        	if(payload.getByteBuf()!=null)
+        		bytesReceived.addAndGet(payload.getByteBuf().readableBytes());
+        	
             this.associationListener.onPayload(this, payload);
         } catch (Exception e) {
             logger.error(String.format("Error while calling Listener for Association=%s.Payload=%s", this.name, payload), e);
@@ -510,6 +529,7 @@ public class AssociationImpl implements Association {
         }
 
         this.up = true;
+        communicationsUp.incrementAndGet();
         this.getAssociationListener().onCommunicationUp(this, maxInboundStreams, maxOutboundStreams);
 
         for (ManagementEventListener lstr : this.management.getManagementEventListeners()) {
@@ -534,12 +554,21 @@ public class AssociationImpl implements Association {
                 }
             }
 
+            communicationsDown.incrementAndGet();
             this.getAssociationListener().onCommunicationShutdown(this);
 
             if (this.server != null) {
             	this.server.anonymAssociations.remove(this.getName());
             }
         }
+    }
+    
+    protected void markCommunicationLost() {
+    	communicationsLost.incrementAndGet();    	 
+    }
+    
+    protected void markCommunicationRestart() {
+    	communicationsRestart.incrementAndGet();    	 
     }
 
     protected void scheduleConnect() {
@@ -644,4 +673,36 @@ public class AssociationImpl implements Association {
         b.option(SctpChannelOption.SO_RCVBUF, this.management.getOptionSoRcvbuf());
         b.option(SctpChannelOption.SO_LINGER, this.management.getOptionSoLinger());
     }
+
+	public Integer getCommunicationsUp() {
+		return communicationsUp.get();
+	}
+
+	public Integer getCommunicationsDown() {
+		return communicationsDown.get();
+	}
+
+	public Integer getCommunicationsLost() {
+		return communicationsLost.get();
+	}
+
+	public Integer getCommunicationsRestart() {
+		return communicationsRestart.get();
+	}
+
+	public Long getPacketsSent() {
+		return packetsSent.get();
+	}
+
+	public Long getPacketsReceived() {
+		return packetsReceived.get();
+	}
+
+	public Long getBytesSent() {
+		return bytesSent.get();
+	}
+
+	public Long getBytesReceived() {
+		return bytesReceived.get();
+	}        
 }
