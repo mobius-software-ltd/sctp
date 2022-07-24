@@ -179,5 +179,44 @@ public interface Association {
 	 * @throws Exception
 	 */
 	public void stopAnonymousAssociation() throws Exception;
+	
+	/**
+	 * Returns the number of times communication was up for this association starting from association creation
+	 */
+	public Integer getCommunicationsUp();
 
+	/**
+	 * Returns the number of times communication was down for this association starting from association creation
+	 */
+	public Integer getCommunicationsDown();
+
+	/**
+	 * Returns the number of times communication was lost for this association starting from association creation
+	 */
+	public Integer getCommunicationsLost();
+
+	/**
+	 * Returns the number of times communication was restarted for this association starting from association creation
+	 */
+	public Integer getCommunicationsRestart();
+
+	/**
+	 * Returns the number of packets that has been sent for this association starting from association creation
+	 */
+	public Long getPacketsSent();
+
+	/**
+	 * Returns the number of packets that has been received for this association starting from association creation
+	 */
+	public Long getPacketsReceived();
+
+	/**
+	 * Returns the number of bytes that has been sent for this association starting from association creation
+	 */
+	public Long getBytesSent();
+
+	/**
+	 * Returns the number of bytes that has been received for this association starting from association creation
+	 */
+	public Long getBytesReceived();
 }
