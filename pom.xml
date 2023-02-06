@@ -9,7 +9,7 @@
 	
 	<groupId>com.mobius-software.protocols.sctp</groupId>
 	<artifactId>sctp-parent</artifactId>
-	<version>2.2.8</version>
+	<version>2.2.9-SNAPSHOT</version>
 	<name>Mobius :: SCTP :: Parent :: ${project.artifactId}</name>
 	<packaging>pom</packaging>
 
@@ -233,6 +233,6 @@
 		<connection>scm:git:https://github.com/mobius-software-ltd/sctp.git</connection>
 		<developerConnection>scm:git:git@github.com:mobius-software-ltd/sctp.git</developerConnection>
 		<url>https://github.com/mobius-software-ltd/sctp</url>
-	  <tag>sctp-parent-2.2.8</tag>
+	  <tag>HEAD</tag>
     </scm>	
 </project>
