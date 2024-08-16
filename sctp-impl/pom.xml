@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.mobius-software.protocols.sctp</groupId>
 		<artifactId>sctp-parent</artifactId>
-		<version>2.2.10-java11</version>
+		<version>2.2.11-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>sctp-impl</artifactId>
