@@ -32,14 +32,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.api.Association;
 import org.restcomm.protocols.api.AssociationListener;
 import org.restcomm.protocols.api.IpChannelType;
 import org.restcomm.protocols.api.PayloadData;
 import org.restcomm.protocols.sctp.SctpManagementImpl;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 import io.netty.buffer.Unpooled;
 
@@ -130,7 +130,7 @@ public class ModifyAssociationTest {
 		this.management.stop();
 	}
 
-    @Test(groups = { "functional", "sctp" })
+    @Test
     public void testModifyServerAndAssociationSctp() throws Exception {
 
         if (SctpTransferTest.checkSctpEnabled())
@@ -141,7 +141,7 @@ public class ModifyAssociationTest {
      * Simple test that creates Client and Server Association, exchanges data
      * and brings down association. Finally removes the Associations and Server
      */
-    @Test(groups = { "functional", "tcp" })
+    @Test
     public void testModifyServerAndAssociationTcp() throws Exception {
 
         this.testModifyServerAndAssociation(IpChannelType.TCP, SERVER_PORT2, CLIENT_PORT2);
@@ -205,7 +205,7 @@ public class ModifyAssociationTest {
 		this.tearDown();
 	}
 
-    @Test(groups = { "functional", "sctp" })
+    @Test
     public void testModifyServerAndClientAssociationsSctp() throws Exception {
 
         if (SctpTransferTest.checkSctpEnabled())
@@ -216,7 +216,7 @@ public class ModifyAssociationTest {
      * Simple test that creates Client and Server Association, exchanges data
      * and brings down association. Finally removes the Associations and Server
      */
-    @Test(groups = { "functional", "tcp" })
+    @Test
     public void testModifyServerAndClientAssociationsTcp() throws Exception {
 
         this.testModifyServerAndClientAssociations(IpChannelType.TCP, SERVER_PORT4, CLIENT_PORT4);

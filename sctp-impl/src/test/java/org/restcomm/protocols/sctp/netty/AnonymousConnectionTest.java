@@ -36,6 +36,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.api.Association;
 import org.restcomm.protocols.api.AssociationListener;
 import org.restcomm.protocols.api.IpChannelType;
@@ -43,9 +46,6 @@ import org.restcomm.protocols.api.PayloadData;
 import org.restcomm.protocols.api.Server;
 import org.restcomm.protocols.api.ServerListener;
 import org.restcomm.protocols.sctp.SctpManagementImpl;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 import io.netty.buffer.Unpooled;
 
@@ -151,7 +151,7 @@ public class AnonymousConnectionTest implements ServerListener {
      * Simple test that creates Client and Server Association, exchanges data
      * and brings down association. Finally removes the Associations and Server
      */
-    @Test(groups = { "functional", "sctp" })
+    @Test
     public void testAnonymousSctp() throws Exception {
 
         if (SctpTransferTest.checkSctpEnabled())
@@ -162,13 +162,10 @@ public class AnonymousConnectionTest implements ServerListener {
      * Simple test that creates Client and Server Association, exchanges data
      * and brings down association. Finally removes the Associations and Server
      */
-    @Test(groups = { "functional", "tcp" })
+    @Test
     public void testAnonymousTcp() throws Exception {
 
-        // BasicConfigurator.configure();
-        // Logger logger = Logger.getLogger(ServerImpl.class.getName());
-        // logger.setLevel(Level.ALL);
-
+    	Configurator.initialize(new DefaultConfiguration());
         this.testAnonymousByProtocol(IpChannelType.TCP);
     }
 

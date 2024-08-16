@@ -32,14 +32,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.api.Association;
 import org.restcomm.protocols.api.AssociationListener;
 import org.restcomm.protocols.api.IpChannelType;
 import org.restcomm.protocols.api.PayloadData;
 import org.restcomm.protocols.sctp.SctpManagementImpl;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 import com.sun.nio.sctp.SctpChannel;
 
@@ -139,7 +139,7 @@ public class SctpTransferTest {
 	 * Simple test that creates Client and Server Association, exchanges data
 	 * and brings down association. Finally removes the Associations and Server
 	 */
-	@Test(groups = { "functional", "sctp" })
+	@Test
 	public void testDataTransferSctp() throws Exception {
 		if (SctpTransferTest.checkSctpEnabled())
 			this.testDataTransferByProtocol(IpChannelType.SCTP);
@@ -150,7 +150,7 @@ public class SctpTransferTest {
 	 * and brings down association. Finally removes the Associations and Server
 	 */
 	//TODO
-    @Test(groups = { "functional", "tcp" })
+    @Test
     public void testDataTransferTcp() throws Exception {
         this.testDataTransferByProtocol(IpChannelType.TCP);
     }

@@ -16,12 +16,11 @@
 
 	<properties>
 		<log4j2.version>2.19.0</log4j2.version>
-		<junit.version>4.11</junit.version>
-		<testng.version>7.5</testng.version>
+		<junit.version>4.12</junit.version>
 		<compiler.plugin.version>3.8.1</compiler.plugin.version>
 		<maven.plugin.version>8.0.0-5</maven.plugin.version>
 		<compile.source>1.8</compile.source>
-		<netty.version>4.1.53.Final</netty.version>	
+		<netty.version>4.1.63.Final</netty.version>	
 	</properties>
 	<modules>
 		<module>sctp-api</module>

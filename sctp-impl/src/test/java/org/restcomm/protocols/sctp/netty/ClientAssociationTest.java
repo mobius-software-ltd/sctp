@@ -33,14 +33,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.api.Association;
 import org.restcomm.protocols.api.AssociationListener;
 import org.restcomm.protocols.api.IpChannelType;
 import org.restcomm.protocols.api.PayloadData;
 import org.restcomm.protocols.sctp.SctpManagementImpl;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 import io.netty.buffer.Unpooled;
 
@@ -132,7 +132,7 @@ public class ClientAssociationTest {
      * 
      * @throws Exception
      */
-    @Test(groups = { "functional", "sctp" })
+    @Test
     public void testConnectAttemptsSctp() throws Exception {
         
         if (SctpTransferTest.checkSctpEnabled())
@@ -145,7 +145,7 @@ public class ClientAssociationTest {
      * 
      * @throws Exception
      */
-    @Test(groups = { "functional", "tcp" })
+    @Test
     public void testConnectAttemptsTcp() throws Exception {
 
         this.testConnectAttemptsByProtoclol(IpChannelType.TCP);
@@ -153,9 +153,7 @@ public class ClientAssociationTest {
 
     private void testConnectAttemptsByProtoclol(IpChannelType ipChannelType) throws Exception {
 
-//      BasicConfigurator.configure();
-//      Logger logger = Logger.getLogger(ServerImpl.class.getName());
-//      logger.setLevel(Level.ALL);
+    	Configurator.initialize(new DefaultConfiguration());
 
         this.setUp(ipChannelType);
 
