@@ -39,9 +39,12 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ServerChannel;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.sctp.SctpChannelOption;
 import io.netty.channel.sctp.SctpServerChannel;
 import io.netty.channel.sctp.nio.NioSctpServerChannel;
+import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
@@ -72,7 +75,7 @@ public class ServerImpl implements Server {
     // Netty declarations
     // The channel on which we'll accept connections
     private SctpServerChannel serverChannelSctp;
-    private NioServerSocketChannel serverChannelTcp;
+    private ServerSocketChannel serverChannelTcp;
 
     /**
      * 
@@ -288,14 +291,22 @@ public class ServerImpl implements Server {
 
     private void initSocket() throws Exception {
         ServerBootstrap b = new ServerBootstrap();
-        b.group(this.management.getBossGroup(), this.management.getWorkerGroup());
         if (this.ipChannelType == IpChannelType.SCTP) {
+        	b.group(this.management.getBossGroup(), this.management.getWorkerGroup());        	
             b.channel(NioSctpServerChannel.class);
             b.option(ChannelOption.SO_BACKLOG, 100);
             b.childHandler(new NettySctpServerChannelInitializer(this, this.management));
             this.applySctpOptions(b);
         } else {
-            b.channel(NioServerSocketChannel.class);
+        	if(Epoll.isAvailable()) {
+        		b.group(this.management.getEpollGroup(), this.management.getEpollWorkerGroup());
+        		b.channel(EpollServerSocketChannel.class);
+        	}
+        	else {
+        		b.group(this.management.getBossGroup(), this.management.getWorkerGroup());
+        		b.channel(NioServerSocketChannel.class);
+        	}
+        	
             b.option(ChannelOption.SO_BACKLOG, 100);
             b.childHandler(new NettyTcpServerChannelInitializer(this, this.management));
         }
@@ -326,7 +337,7 @@ public class ServerImpl implements Server {
                 logger.info(String.format("SctpServerChannel bound to=%s ", this.serverChannelSctp.allLocalAddresses()));
             }
         } else {
-            this.serverChannelTcp = (NioServerSocketChannel) channelFuture.channel();
+            this.serverChannelTcp = (ServerSocketChannel)channelFuture.channel();
 
             if (logger.isInfoEnabled()) {
                 logger.info(String.format("ServerSocketChannel bound to=%s ", this.serverChannelTcp.localAddress()));

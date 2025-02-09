@@ -47,6 +47,8 @@ import com.sun.nio.sctp.SctpStandardSocketOptions;
 import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
 
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
@@ -74,6 +76,8 @@ public class SctpManagementImpl implements Management {
 
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
+    private EventLoopGroup epollGroup;
+    private EventLoopGroup epollWorkerGroup;
     private ScheduledExecutorService clientExecutor;
 
     // SctpStandardSocketOptions
@@ -165,6 +169,14 @@ public class SctpManagementImpl implements Management {
         return workerGroup;
     }
 
+    protected EventLoopGroup getEpollGroup() {
+        return epollGroup;
+    }
+
+    protected EventLoopGroup getEpollWorkerGroup() {
+        return epollWorkerGroup;
+    }
+
     protected ScheduledExecutorService getClientExecutor() {
         return clientExecutor;
     }
@@ -205,6 +217,11 @@ public class SctpManagementImpl implements Management {
 
         this.bossGroup = new NioEventLoopGroup(bossSize, new DefaultThreadFactory("Sctp-BossGroup-" + this.name));
         this.workerGroup = new NioEventLoopGroup(workerSize, new DefaultThreadFactory("Sctp-WorkerGroup-" + this.name));
+        if(Epoll.isAvailable()) {
+        	this.epollGroup = new EpollEventLoopGroup(bossSize, new DefaultThreadFactory("Sctp-EpollGroup-" + this.name));
+            this.epollWorkerGroup = new EpollEventLoopGroup(workerSize, new DefaultThreadFactory("Sctp-EpollWorkerGroup-" + this.name));            
+        }
+        
         this.clientExecutor = new ScheduledThreadPoolExecutor(clientSize, new DefaultThreadFactory("Sctp-ClientExecutorGroup-"
                 + this.name));
 

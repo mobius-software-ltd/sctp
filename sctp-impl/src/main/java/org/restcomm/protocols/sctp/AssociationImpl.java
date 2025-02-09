@@ -47,6 +47,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.sctp.SctpChannel;
 import io.netty.channel.sctp.SctpChannelOption;
 import io.netty.channel.sctp.SctpMessage;
@@ -607,11 +609,10 @@ public class AssociationImpl implements Association {
         Bootstrap b;
         InetSocketAddress localAddress;
         try {
-            EventLoopGroup group = this.management.getBossGroup();
-            b = new Bootstrap();
-
-            b.group(group);
+        	b = new Bootstrap();
             if (this.ipChannelType == IpChannelType.SCTP) {
+            	EventLoopGroup group = this.management.getBossGroup();
+                b.group(group);
                 b.channel(NioSctpChannel.class);
 
                 // applying of stack level SCTP options
@@ -619,8 +620,22 @@ public class AssociationImpl implements Association {
 
                 b.handler(new NettySctpClientChannelInitializer(this));
             } else {
-                b.channel(NioSocketChannel.class);
-                b.option(ChannelOption.TCP_NODELAY, true);
+            	if(Epoll.isAvailable())
+            	{
+            		EventLoopGroup group = this.management.getEpollGroup();
+                    b.group(group);
+                    b.channel(EpollSocketChannel.class);
+            	}
+            	else
+            	{
+            		EventLoopGroup group = this.management.getBossGroup();
+                    b.group(group);
+                    b.channel(NioSocketChannel.class);
+            	}
+            	
+            	// applying of stack level TCP options
+                this.applyTcpOptions(b);
+            	
                 b.handler(new NettyTcpClientChannelInitializer(this));
             }
 
@@ -672,6 +687,12 @@ public class AssociationImpl implements Association {
         b.option(SctpChannelOption.SCTP_FRAGMENT_INTERLEAVE, this.management.getOptionSctpFragmentInterleave());
         b.option(SctpChannelOption.SCTP_INIT_MAXSTREAMS, this.management.getOptionSctpInitMaxstreams());
         b.option(SctpChannelOption.SO_SNDBUF, this.management.getOptionSoSndbuf());
+        b.option(SctpChannelOption.SO_RCVBUF, this.management.getOptionSoRcvbuf());
+        b.option(SctpChannelOption.SO_LINGER, this.management.getOptionSoLinger());
+    }
+
+    private void applyTcpOptions(Bootstrap b) {
+    	b.option(SctpChannelOption.SO_SNDBUF, this.management.getOptionSoSndbuf());
         b.option(SctpChannelOption.SO_RCVBUF, this.management.getOptionSoRcvbuf());
         b.option(SctpChannelOption.SO_LINGER, this.management.getOptionSoLinger());
     }
