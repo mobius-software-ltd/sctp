@@ -695,7 +695,7 @@ public class SctpManagementImpl implements Management {
                         associationTemp.getName(), peerAddress, peerPort));
             }
 
-            if (hostAddress.equals(associationTemp.getHostAddress()) && associationTemp.getHostPort() == hostPort && associationTemp.getIpChannelType().equals(ipChannelType)) {
+            if (hostAddress.equals(associationTemp.getHostAddress()) && hostPort!=0 && associationTemp.getHostPort() == hostPort && associationTemp.getIpChannelType().equals(ipChannelType)) {
                 throw new Exception(String.format("Already has association=%s with same host address=%s and port=%d",
                         associationTemp.getName(), hostAddress, hostPort));
             }
